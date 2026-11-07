@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Registration Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="page-title">
+    <h1>Smart Registration Form</h1>
+  </div>
+
+  <div class="page">
+
+    <!-- Image outside the card -->
+    <div class="side-block">
+      <img class="side-image" src="images/1.jpeg" alt="Register now">
+      <p class="side-text">Register here to join as a student. This form checks your details instantly and adds you to the list below.</p>
+    </div>
+
+    <main class="card">
+      <div class="card-form">
+
+        <h1>Create your account</h1>
+        <p class="subtitle">All fields are required.</p>
+
+        <form id="registrationForm" novalidate autocomplete="off">
+
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Your full name" autocomplete="off">
+            <p class="error" id="nameError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" placeholder="Your age" min="1" max="120">
+            <p class="error" id="ageError"></p>
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="gender-row">
+              <label class="radio-label">
+                <input type="radio" name="gender" value="Male"> Male
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="gender" value="Female"> Female
+              </label>
+            </div>
+            <p class="error" id="genderError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="off">
+            <p class="error" id="emailError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="At least 6 characters" autocomplete="off">
+            <p class="error" id="passwordError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" rows="4" maxlength="200" placeholder="Tell us a little about yourself"></textarea>
+            <div class="counter-row">
+              <p class="warning" id="bioWarning"></p>
+              <p class="counter" id="bioCounter">0 / 200 characters</p>
+            </div>
+            <p class="error" id="bioError"></p>
+          </div>
+
+          <button type="submit" id="submitBtn" disabled>Register</button>
+
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- Student list table -->
+  <section class="table-wrap">
+    <h2>Registered Students Details</h2>
+    <p class="table-hint">On phone, swipe the table left or right to see every column.</p>
+    <div class="table-scroll">
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>GENDER</th>
+            <th>EMAIL</th>
+            <th>BIO</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+      </table>
+    </div>
+    <p class="empty-text" id="emptyText">No students yet. Register to add a row.</p>
+  </section>
+
+  <!-- Success popup -->
+  <div class="popup-overlay" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" hidden>
+    <div class="popup-box">
+      <button type="button" class="popup-close" id="closePopup" aria-label="Close">&times;</button>
+      <div class="popup-icon">&#10003;</div>
+      <h2 id="popupTitle">Registration successful</h2>
+      <p id="popupText"></p>
+    </div>
+  </div>
+
+  <!-- Link JavaScript -->
+   <script src="script.js"></script>
+</body>
+</html>
