@@ -252,7 +252,7 @@ button:disabled {
 
 table {
   width: 100%;
-  min-width: 720px;
+  min-width: 820px;
   border-collapse: collapse;
 }
 
@@ -275,6 +275,14 @@ td {
   color: #000000;
 }
 
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.add-btn,
+.update-btn,
 .delete-btn {
   width: auto;
   padding: 6px 12px;
@@ -284,6 +292,8 @@ td {
   font-size: 13px;
 }
 
+.add-btn:hover:not(:disabled),
+.update-btn:hover:not(:disabled),
 .delete-btn:hover:not(:disabled) {
   background-color: #000000;
   color: #ffffff;
@@ -458,6 +468,8 @@ td {
     font-size: 12px;
   }
 
+  .add-btn,
+  .update-btn,
   .delete-btn {
     padding: 5px 8px;
     font-size: 12px;

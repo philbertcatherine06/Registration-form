@@ -25,6 +25,7 @@ const bioWarning = document.getElementById("bioWarning");
 
 const submitBtn = document.getElementById("submitBtn");
 const successPopup = document.getElementById("successPopup");
+const popupTitle = document.getElementById("popupTitle");
 const popupText = document.getElementById("popupText");
 const closePopupBtn = document.getElementById("closePopup");
 
@@ -89,6 +90,11 @@ function getEmailError() {
 
 function getPasswordError() {
   const length = passwordInput.value.length;
+
+  // Update keeps the old password if this box is left empty
+  if (length === 0 && editingRow !== null) {
+    return "";
+  }
 
   if (length === 0) {
     return "Password is required.";
@@ -219,7 +225,7 @@ function isFormValid() {
 }
 
 function updateSubmitButton() {
-  // ! means opposite: if the form is NOT valid, keep Register disabled
+  // ! means opposite: if the form is NOT valid, keep the button disabled
   submitBtn.disabled = !isFormValid();
 }
 
@@ -266,12 +272,64 @@ for (let i = 0; i < genderInputs.length; i++) {
 
 
 // ---------- 6. Submit + table ----------
+let editingRow = null;
+
 function updateEmptyText() {
   if (studentTableBody.rows.length === 0) {
     emptyText.classList.remove("hidden");
   } else {
     emptyText.classList.add("hidden");
   }
+}
+
+function setGender(value) {
+  for (let i = 0; i < genderInputs.length; i++) {
+    if (genderInputs[i].value === value) {
+      genderInputs[i].checked = true;
+    }
+  }
+}
+
+function startAddMode() {
+  editingRow = null;
+  form.reset();
+  clearFieldStyles();
+  updateBioCounter();
+  submitBtn.textContent = "Register";
+  updateSubmitButton();
+  nameInput.focus();
+}
+
+function fillFormFromRow(row) {
+  const cells = row.getElementsByTagName("td");
+
+  nameInput.value = cells[0].textContent;
+  ageInput.value = cells[1].textContent;
+  setGender(cells[2].textContent);
+  emailInput.value = cells[3].textContent;
+  passwordInput.value = "";
+  bioInput.value = cells[4].textContent;
+
+  editingRow = row;
+  submitBtn.textContent = "Update";
+  checkName();
+  checkAge();
+  checkGender();
+  checkEmail();
+  checkBio();
+  updateBioCounter();
+  updateSubmitButton();
+  nameInput.focus();
+}
+
+function saveRowFromForm(row) {
+  const cells = row.getElementsByTagName("td");
+
+  cells[0].textContent = nameInput.value.trim();
+  cells[1].textContent = ageInput.value.trim();
+  cells[2].textContent = getSelectedGender();
+  cells[3].textContent = emailInput.value.trim();
+  cells[4].textContent = bioInput.value.trim();
 }
 
 function addStudentRow(name, age, gender, email, bio) {
@@ -293,17 +351,41 @@ function addStudentRow(name, age, gender, email, bio) {
   bioCell.textContent = bio;
 
   const actionCell = document.createElement("td");
+  const buttonWrap = document.createElement("div");
+  buttonWrap.className = "action-buttons";
+
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "add-btn";
+  addBtn.textContent = "Add";
+  addBtn.addEventListener("click", function () {
+    startAddMode();
+  });
+
+  const updateBtn = document.createElement("button");
+  updateBtn.type = "button";
+  updateBtn.className = "update-btn";
+  updateBtn.textContent = "Update";
+  updateBtn.addEventListener("click", function () {
+    fillFormFromRow(row);
+  });
+
   const deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
   deleteBtn.className = "delete-btn";
   deleteBtn.textContent = "Delete";
-
   deleteBtn.addEventListener("click", function () {
+    if (editingRow === row) {
+      startAddMode();
+    }
     row.remove();
     updateEmptyText();
   });
 
-  actionCell.appendChild(deleteBtn);
+  buttonWrap.appendChild(addBtn);
+  buttonWrap.appendChild(updateBtn);
+  buttonWrap.appendChild(deleteBtn);
+  actionCell.appendChild(buttonWrap);
 
   row.appendChild(nameCell);
   row.appendChild(ageCell);
@@ -352,15 +434,18 @@ form.addEventListener("submit", function (event) {
   const userEmail = emailInput.value.trim();
   const userBio = bioInput.value.trim();
 
-  addStudentRow(userName, userAge, userGender, userEmail, userBio);
+  if (editingRow !== null) {
+    saveRowFromForm(editingRow);
+    popupTitle.textContent = "Updated Successfully";
+    popupText.textContent = "Thank you, " + userName + "! Your details were updated.";
+  } else {
+    addStudentRow(userName, userAge, userGender, userEmail, userBio);
+    popupTitle.textContent = "Registration successful";
+    popupText.textContent = "Thank you, " + userName + "! Your registration was successful.";
+  }
 
-  popupText.textContent = "Thank you, " + userName + "! Your registration was successful.";
   successPopup.hidden = false;
-
-  form.reset();
-  clearFieldStyles();
-  updateBioCounter();
-  updateSubmitButton();
+  startAddMode();
 });
 
 closePopupBtn.addEventListener("click", function () {
